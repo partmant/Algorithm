@@ -86,6 +86,8 @@ public class Main {
 		int useEdge = 0;
 		int result = 0;
 		while (!pq.isEmpty()) {
+			if (useEdge == sNum - 2)
+				break;
 			Edge now = pq.poll();
 			if (find(now.s) != find(now.e)) {
 				union(now.s, now.e);
