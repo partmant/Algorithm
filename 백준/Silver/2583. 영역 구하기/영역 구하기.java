@@ -5,20 +5,22 @@ public class Main {
     static final int[] dr = {0, -1, 0, 1};
     static final int[] dc = {1, 0, -1, 0};
 
+    static int M, N;
+    static boolean[][] board;
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int M = Integer.parseInt(st.nextToken());
-        int N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
 
-        boolean[][] board = new boolean[M][N];
+        board = new boolean[M][N];
 
         for (int t = 0; t < K; t++) {
             st = new StringTokenizer(br.readLine());
-
             int x1 = Integer.parseInt(st.nextToken());
             int y1 = Integer.parseInt(st.nextToken());
             int x2 = Integer.parseInt(st.nextToken());
@@ -31,39 +33,16 @@ public class Main {
             }
         }
 
-        Queue<int[]> q = new LinkedList<>();
         ArrayList<Integer> areas = new ArrayList<>();
         int count = 0;
 
         for (int r = 0; r < M; r++) {
             for (int c = 0; c < N; c++) {
-                if (board[r][c]) {
-                    continue;
+                if (!board[r][c]) {
+                    int area = bfs(r, c);
+                    count++;
+                    areas.add(area);
                 }
-
-                q.add(new int[]{r, c});
-                board[r][c] = true;
-                count++;
-                int area = 1;
-
-                while (!q.isEmpty()) {
-                    int[] now = q.poll();
-
-                    for (int d = 0; d < 4; d++) {
-                        int nextR = now[0] + dr[d];
-                        int nextC = now[1] + dc[d];
-
-                        if (nextR >= 0 && nextR < M
-                                && nextC >= 0 && nextC < N) {
-                            if (!board[nextR][nextC]) {
-                                q.add(new int[]{nextR, nextC});
-                                board[nextR][nextC] = true;
-                                area++;
-                            }
-                        }
-                    }
-                }
-                areas.add(area);
             }
         }
 
@@ -76,5 +55,32 @@ public class Main {
         sb.setLength(sb.length() - 1);
 
         System.out.print(sb);
+    }
+
+    static int bfs(int sr, int sc) {
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{sr, sc});
+        board[sr][sc] = true;
+        int area = 1;
+
+        while (!q.isEmpty()) {
+            int[] now = q.poll();
+            int r = now[0];
+            int c = now[1];
+
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dr[d];
+                int nc = c + dc[d];
+
+                if (nr >= 0 && nr < M && nc >= 0 && nc < N) {
+                    if (!board[nr][nc]) {
+                        board[nr][nc] = true;
+                        q.add(new int[]{nr, nc});
+                        area++;
+                    }
+                }
+            }
+        }
+        return area;
     }
 }
