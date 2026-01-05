@@ -1,30 +1,28 @@
 import java.util.*;
 
-class Main {
+public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        
-        String S = sc.next();
-        Deque<Character> q = new ArrayDeque<>();
-        
-        for (int i = 0; i < S.length(); i++) {
-            q.add(S.charAt(i));
-        }        
-         
-        char first = q.poll();
-        StringBuilder sb = new StringBuilder();
-        sb.append(first);
+        String s = sc.next();
 
-        while (!q.isEmpty()) {
-            char last = q.poll();
-            if (last <= first) {
-                sb.insert(0, last);
-                first = last;
+        Deque<Character> dq = new ArrayDeque<>();
+
+        dq.add(s.charAt(0));
+
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c <= dq.peekFirst()) {
+                dq.addFirst(c);
             } else {
-            	sb.append(last);
+                dq.addLast(c);
             }
         }
-        
-        System.out.print(sb);
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : dq) {
+            sb.append(c);
+        }
+
+        System.out.print(sb.toString());
     }
 }
