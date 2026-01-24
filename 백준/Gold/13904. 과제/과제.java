@@ -1,47 +1,41 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    
+    static class Task {
+        int d, w;
+        Task(int d, int w) {
+            this.d = d;
+            this.w = w;
+        }
+    }
 
-		int N = Integer.parseInt(br.readLine());
-		List<int[]> list = new ArrayList<>();
-		int max = 0;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
 
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int d = Integer.parseInt(st.nextToken());
-			int w = Integer.parseInt(st.nextToken());
+        Task[] tasks = new Task[N];
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int d = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            tasks[i] = new Task(d, w);
+        }
 
-			list.add(new int[] { d, w });
-			max = Math.max(max, d);
-		}
+        Arrays.sort(tasks, (a, b) -> a.d - b.d);
 
-		Collections.sort(list, (a, b) -> {
-			if (a[1] != b[1])
-				return b[1] - a[1];
-			return b[0] - a[0];
-		});
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (Task t : tasks) {
+            pq.add(t.w);
+            if (pq.size() > t.d) {
+                pq.poll();
+            }
+        }
 
-		int sum = 0;
-		for (int i = max; i > 0; i--) {
-			for (int j = 0; j < list.size(); j++) {
-				int[] cur = list.get(j);
-				if (cur[0] >= i) {
-					sum += cur[1];
-					list.remove(j);
-					break;
-				}
-			}
-		}
-
-		System.out.println(sum);
-	}
+        long ans = 0;
+        while (!pq.isEmpty()) ans += pq.poll();
+        
+        System.out.println(ans);
+    }
 }
